@@ -133,14 +133,30 @@ class AdminCourseController extends Controller
      * Ambil id tutor teknis untuk mengisi kolom tutor_id (foreign key)
      * yang masih wajib diisi di database. Nama tutor yang sebenarnya
      * ditampilkan ke user selalu diambil dari tutor_nama, bukan dari sini.
+     *
+     * Sebelumnya method ini abort(500) kalau tabel tutors masih kosong
+     * (misalnya di server hosting yang baru di-migrate tapi belum/skip
+     * di-seed), sehingga tombol "Simpan Paket" gagal total. Sekarang,
+     * kalau belum ada data tutor sama sekali, buat otomatis satu baris
+     * tutor "placeholder" yang ditautkan ke akun admin yang sedang
+     * login (akun ini pasti sudah ada karena route ini di balik
+     * middleware role:admin), supaya syarat foreign key tetap terpenuhi
+     * tanpa mengganggu proses simpan paket kursus.
      */
     private function fallbackTutorId(): int
     {
         $tutorId = Tutor::query()->value('id');
 
-        abort_if($tutorId === null, 500, 'Belum ada data tutor di sistem. Tambahkan minimal satu tutor terlebih dahulu.');
+        if ($tutorId !== null) {
+            return $tutorId;
+        }
 
-        return $tutorId;
+        return Tutor::create([
+            'user_id' => auth()->id(),
+            'keahlian' => 'Umum',
+            'harga' => 0,
+            'deskripsi' => 'Data teknis otomatis (fallback) — tidak ditampilkan ke user. Nama tutor yang tampil selalu berasal dari kolom tutor_nama di masing-masing paket kursus.',
+        ])->id;
     }
 
     /**
