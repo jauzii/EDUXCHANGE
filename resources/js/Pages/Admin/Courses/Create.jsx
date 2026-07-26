@@ -1,9 +1,9 @@
 import { Link, useForm } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
-export default function AdminCoursesCreate({ tutors = [], categories = [] }) {
+export default function AdminCoursesCreate({ categories = [] }) {
     const { data, setData, post, processing, errors } = useForm({
-        tutor_id: '',
+        tutor_nama: '',
         nama_kursus: '',
         kategori: '',
         harga: '',
@@ -30,17 +30,14 @@ export default function AdminCoursesCreate({ tutors = [], categories = [] }) {
                     <form onSubmit={submit} className="space-y-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
                         <div>
                             <label className="block text-sm font-bold text-slate-700">Tutor pengajar</label>
-                            <select
-                                value={data.tutor_id}
-                                onChange={(event) => setData('tutor_id', event.target.value)}
+                            <input
+                                type="text"
+                                value={data.tutor_nama}
+                                onChange={(event) => setData('tutor_nama', event.target.value)}
+                                placeholder="Contoh: Budi Santoso"
                                 className="mt-2 block w-full rounded-2xl border-slate-200 text-sm focus:border-indigo-500 focus:ring-indigo-500"
-                            >
-                                <option value="">Pilih tutor</option>
-                                {tutors.map((tutor) => (
-                                    <option key={tutor.id} value={tutor.id}>{tutor.name}</option>
-                                ))}
-                            </select>
-                            {errors.tutor_id && <p className="mt-2 text-sm text-red-600">{errors.tutor_id}</p>}
+                            />
+                            {errors.tutor_nama && <p className="mt-2 text-sm text-red-600">{errors.tutor_nama}</p>}
                         </div>
 
                         <div>

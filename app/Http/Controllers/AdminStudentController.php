@@ -77,7 +77,7 @@ class AdminStudentController extends Controller
                 'course' => [
                     'nama_kursus' => $enrollment->course->nama_kursus,
                     'kategori' => $enrollment->course->kategori,
-                    'tutor' => $enrollment->course->tutor?->user?->name,
+                    'tutor' => $enrollment->course->tutor_display_name,
                 ],
                 'status' => $enrollment->sudah_selesai ? 'expired' : 'active',
                 'started_at' => $enrollment->started_at->translatedFormat('d M Y'),

@@ -25,7 +25,7 @@ class CourseController extends Controller
                 'harga' => $course->harga,
                 'deskripsi' => $course->deskripsi,
                 'tutor' => [
-                    'name' => $course->tutor?->user?->name,
+                    'name' => $course->tutor_display_name,
                 ],
             ]);
 

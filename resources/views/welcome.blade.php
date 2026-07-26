@@ -65,21 +65,6 @@
                             Lihat Paket
                         </a>
                     </div>
-
-                    <div class="mt-10 grid max-w-xl grid-cols-3 gap-3">
-                        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                            <div class="text-2xl font-extrabold text-slate-950">30</div>
-                            <div class="text-sm font-medium text-slate-500">Hari akses</div>
-                        </div>
-                        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                            <div class="text-2xl font-extrabold text-slate-950">5+</div>
-                            <div class="text-sm font-medium text-slate-500">Kategori</div>
-                        </div>
-                        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                            <div class="text-2xl font-extrabold text-slate-950">1</div>
-                            <div class="text-sm font-medium text-slate-500">Dashboard</div>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="relative">

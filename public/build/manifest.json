@@ -1,6 +1,6 @@
 {
-  "_AuthenticatedLayout-B0TYYvQR.js": {
-    "file": "assets/AuthenticatedLayout-B0TYYvQR.js",
+  "_AuthenticatedLayout-Bac1Y5xV.js": {
+    "file": "assets/AuthenticatedLayout-Bac1Y5xV.js",
     "name": "AuthenticatedLayout",
     "imports": [
       "resources/js/app.jsx"
@@ -16,176 +16,176 @@
     ]
   },
   "resources/js/Pages/Admin/Courses/Create.jsx": {
-    "file": "assets/Create-BXYwK1XT.js",
+    "file": "assets/Create-CQcN94ou.js",
     "name": "Create",
     "src": "resources/js/Pages/Admin/Courses/Create.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-B0TYYvQR.js"
+      "_AuthenticatedLayout-Bac1Y5xV.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Admin/Courses/Edit.jsx": {
-    "file": "assets/Edit-CCf2Ic98.js",
+    "file": "assets/Edit-ClnPuhH0.js",
     "name": "Edit",
     "src": "resources/js/Pages/Admin/Courses/Edit.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-B0TYYvQR.js"
+      "_AuthenticatedLayout-Bac1Y5xV.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Admin/Courses/Index.jsx": {
-    "file": "assets/Index-BUwwiqxu.js",
+    "file": "assets/Index-jXOMIEtr.js",
     "name": "Index",
     "src": "resources/js/Pages/Admin/Courses/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-B0TYYvQR.js"
+      "_AuthenticatedLayout-Bac1Y5xV.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Admin/Dashboard.jsx": {
-    "file": "assets/Dashboard-DPLblms0.js",
+    "file": "assets/Dashboard-V7oxXbY9.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Admin/Dashboard.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-B0TYYvQR.js"
+      "_AuthenticatedLayout-Bac1Y5xV.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Admin/Students/Index.jsx": {
-    "file": "assets/Index-nZWogYP5.js",
+    "file": "assets/Index-BnKS0rjD.js",
     "name": "Index",
     "src": "resources/js/Pages/Admin/Students/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-B0TYYvQR.js"
+      "_AuthenticatedLayout-Bac1Y5xV.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Admin/Students/Show.jsx": {
-    "file": "assets/Show-7kQGybru.js",
+    "file": "assets/Show-U-j-G94x.js",
     "name": "Show",
     "src": "resources/js/Pages/Admin/Students/Show.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-B0TYYvQR.js"
+      "_AuthenticatedLayout-Bac1Y5xV.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Courses/Index.jsx": {
-    "file": "assets/Index-CN_YCvMw.js",
+    "file": "assets/Index-PAutPwUg.js",
     "name": "Index",
     "src": "resources/js/Pages/Courses/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-B0TYYvQR.js"
+      "_AuthenticatedLayout-Bac1Y5xV.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Dashboard.jsx": {
-    "file": "assets/Dashboard-CofhhhjL.js",
+    "file": "assets/Dashboard-CBAn-_m8.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Dashboard.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-B0TYYvQR.js"
+      "_AuthenticatedLayout-Bac1Y5xV.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Enrollments/Index.jsx": {
-    "file": "assets/Index-hkQUZrHm.js",
+    "file": "assets/Index-jDM_ZRsN.js",
     "name": "Index",
     "src": "resources/js/Pages/Enrollments/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-B0TYYvQR.js"
+      "_AuthenticatedLayout-Bac1Y5xV.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Enrollments/Show.jsx": {
-    "file": "assets/Show-CqoKpSak.js",
+    "file": "assets/Show-CVLq6WdJ.js",
     "name": "Show",
     "src": "resources/js/Pages/Enrollments/Show.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-B0TYYvQR.js"
+      "_AuthenticatedLayout-Bac1Y5xV.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Payment/Show.jsx": {
-    "file": "assets/Show-BrSP3Rtt.js",
+    "file": "assets/Show-ZO6HaJUb.js",
     "name": "Show",
     "src": "resources/js/Pages/Payment/Show.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-B0TYYvQR.js"
+      "_AuthenticatedLayout-Bac1Y5xV.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Payment/Success.jsx": {
-    "file": "assets/Success-BdqxFNra.js",
+    "file": "assets/Success-DOVD9ywX.js",
     "name": "Success",
     "src": "resources/js/Pages/Payment/Success.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-B0TYYvQR.js"
+      "_AuthenticatedLayout-Bac1Y5xV.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Quiz/Create.jsx": {
-    "file": "assets/Create-udNhgZBt.js",
+    "file": "assets/Create-BVIAN5Y8.js",
     "name": "Create",
     "src": "resources/js/Pages/Quiz/Create.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-B0TYYvQR.js"
+      "_AuthenticatedLayout-Bac1Y5xV.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-CV_aVx7k.js",
+    "file": "assets/app-DyVqbynY.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,

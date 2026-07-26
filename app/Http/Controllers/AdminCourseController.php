@@ -33,7 +33,7 @@ class AdminCourseController extends Controller
                 'nama_kursus' => $course->nama_kursus,
                 'kategori' => $course->kategori,
                 'harga' => $course->harga,
-                'tutor' => $course->tutor?->user?->name ?? 'Tutor EDUXCHANGE',
+                'tutor' => $course->tutor_display_name,
                 'enrollments_count' => $course->enrollments_count,
                 'materials_count' => $course->materials_count,
                 'questions_count' => $course->questions_count,
@@ -53,7 +53,6 @@ class AdminCourseController extends Controller
     public function create(): Response
     {
         return Inertia::render('Admin/Courses/Create', [
-            'tutors' => $this->tutorOptions(),
             'categories' => $this->categoryOptions(),
         ]);
     }
@@ -64,6 +63,11 @@ class AdminCourseController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validated($request);
+
+        // Kolom tutor_id di database masih mewajibkan relasi teknis ke
+        // tabel tutors (foreign key), tapi nama yang ditampilkan ke user
+        // sekarang selalu berasal dari input manual tutor_nama.
+        $data['tutor_id'] = $this->fallbackTutorId();
 
         Course::create($data);
 
@@ -78,13 +82,12 @@ class AdminCourseController extends Controller
         return Inertia::render('Admin/Courses/Edit', [
             'course' => [
                 'id' => $course->id,
-                'tutor_id' => $course->tutor_id,
+                'tutor_nama' => $course->tutor_display_name,
                 'nama_kursus' => $course->nama_kursus,
                 'kategori' => $course->kategori,
                 'harga' => $course->harga,
                 'deskripsi' => $course->deskripsi,
             ],
-            'tutors' => $this->tutorOptions(),
             'categories' => $this->categoryOptions(),
         ]);
     }
@@ -118,7 +121,7 @@ class AdminCourseController extends Controller
     private function validated(Request $request): array
     {
         return $request->validate([
-            'tutor_id' => ['required', 'exists:tutors,id'],
+            'tutor_nama' => ['required', 'string', 'max:255'],
             'nama_kursus' => ['required', 'string', 'max:255'],
             'kategori' => ['required', 'string', 'max:255'],
             'harga' => ['required', 'integer', 'min:0'],
@@ -127,17 +130,17 @@ class AdminCourseController extends Controller
     }
 
     /**
-     * Opsi tutor untuk dropdown form (dipakai di Create & Edit).
+     * Ambil id tutor teknis untuk mengisi kolom tutor_id (foreign key)
+     * yang masih wajib diisi di database. Nama tutor yang sebenarnya
+     * ditampilkan ke user selalu diambil dari tutor_nama, bukan dari sini.
      */
-    private function tutorOptions()
+    private function fallbackTutorId(): int
     {
-        return Tutor::with('user')
-            ->get()
-            ->map(fn (Tutor $tutor) => [
-                'id' => $tutor->id,
-                'name' => $tutor->user?->name ?? 'Tutor EDUXCHANGE',
-            ])
-            ->values();
+        $tutorId = Tutor::query()->value('id');
+
+        abort_if($tutorId === null, 500, 'Belum ada data tutor di sistem. Tambahkan minimal satu tutor terlebih dahulu.');
+
+        return $tutorId;
     }
 
     /**

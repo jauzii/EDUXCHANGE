@@ -51,7 +51,7 @@ class PaymentController extends Controller
                 'harga' => $course->harga,
                 'deskripsi' => $course->deskripsi,
                 'tutor' => [
-                    'name' => $course->tutor?->user?->name,
+                    'name' => $course->tutor_display_name,
                 ],
             ],
             'paymentMethods' => collect(self::METODE_PEMBAYARAN)
@@ -124,7 +124,7 @@ class PaymentController extends Controller
                     'nama_kursus' => $transaction->course->nama_kursus,
                     'harga' => $transaction->course->harga,
                     'tutor' => [
-                        'name' => $transaction->course->tutor?->user?->name,
+                        'name' => $transaction->course->tutor_display_name,
                     ],
                 ],
                 'enrollment_id' => $transaction->enrollment?->id,

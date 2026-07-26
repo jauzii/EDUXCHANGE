@@ -13,6 +13,7 @@ class Course extends Model
 
     protected $fillable = [
         'tutor_id',
+        'tutor_nama',
         'nama_kursus',
         'kategori',
         'harga',
@@ -20,11 +21,22 @@ class Course extends Model
     ];
 
     /**
-     * Tutor pemilik/pengajar kursus ini.
+     * Tutor pemilik/pengajar kursus ini (relasi lama, tetap dipakai
+     * sebagai data teknis di database).
      */
     public function tutor(): BelongsTo
     {
         return $this->belongsTo(Tutor::class);
+    }
+
+    /**
+     * Nama tutor yang ditampilkan ke user. Mengutamakan nama yang diisi
+     * manual oleh admin (tutor_nama), lalu fallback ke relasi tutor lama
+     * untuk data kursus yang dibuat sebelum field ini ada.
+     */
+    public function getTutorDisplayNameAttribute(): string
+    {
+        return $this->tutor_nama ?: ($this->tutor?->user?->name ?? 'Tutor EDUXCHANGE');
     }
 
     /**

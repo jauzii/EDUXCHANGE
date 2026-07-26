@@ -38,7 +38,7 @@ class EnrollmentController extends Controller
                     'nama_kursus' => $enrollment->course->nama_kursus,
                     'kategori' => $enrollment->course->kategori,
                     'tutor' => [
-                        'name' => $enrollment->course->tutor?->user?->name,
+                        'name' => $enrollment->course->tutor_display_name,
                     ],
                 ],
             ]);
@@ -83,7 +83,7 @@ class EnrollmentController extends Controller
                     'kategori' => $enrollment->course->kategori,
                     'deskripsi' => $enrollment->course->deskripsi,
                     'tutor' => [
-                        'name' => $enrollment->course->tutor?->user?->name,
+                        'name' => $enrollment->course->tutor_display_name,
                     ],
                     'materials' => $enrollment->course->materials
                         ->values()
