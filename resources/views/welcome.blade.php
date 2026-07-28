@@ -171,7 +171,7 @@
                             </p>
                             <div class="mt-6 border-t border-slate-100 pt-5">
                                 <p class="text-sm font-semibold text-slate-500">Tutor</p>
-                                <p class="mt-1 font-bold text-slate-900">{{ $course->tutor->user->name ?? 'Tutor EDUXCHANGE' }}</p>
+                                <p class="mt-1 font-bold text-slate-900">{{ $course->tutor_display_name }}</p>
                             </div>
                             <div class="mt-5 flex items-end justify-between">
                                 <div>

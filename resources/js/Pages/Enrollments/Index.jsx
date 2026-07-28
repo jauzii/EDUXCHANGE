@@ -59,7 +59,7 @@ export default function EnrollmentsIndex({ enrollments = [] }) {
                                             <div className="h-2.5 rounded-full bg-indigo-600" style={{ width: `${enrollment.progress}%` }}></div>
                                         </div>
                                         <div className="mt-2 flex justify-between text-xs font-bold text-slate-500">
-                                            <span>Progress waktu</span>
+                                            <span>Progress belajar (waktu, kuis, sertifikat)</span>
                                             <span>{enrollment.progress}%</span>
                                         </div>
                                     </div>

@@ -77,11 +77,36 @@ class Enrollment extends Model
     }
 
     /**
-     * Syarat sertifikat: periode 30 hari sudah selesai DAN kuis sudah dikerjakan.
+     * Syarat sertifikat: siswa sudah menyelesaikan (menjawab) semua soal
+     * kuis kursus ini. Tidak perlu menunggu masa akses 30 hari berakhir,
+     * supaya sertifikat langsung tercetak begitu kuis selesai dikerjakan.
      */
     public function getBisaUnduhSertifikatAttribute(): bool
     {
-        return $this->sudah_selesai && $this->sudah_mengerjakan_kuis;
+        return $this->sudah_mengerjakan_kuis;
+    }
+
+    /**
+     * Progress belajar (0-100) untuk 1 paket kursus yang sedang diikuti.
+     * Disusun dari 3 komponen supaya SINKRON di semua halaman (dashboard
+     * student maupun daftar "Kelas Saya"), bukan cuma berdasarkan waktu:
+     *  - 50% dari waktu akses yang sudah berjalan (maks 50)
+     *  - 30% begitu kuis kursus ini sudah dikerjakan
+     *  - 20% begitu sertifikat sudah bisa diunduh
+     * Kalau kursus belum punya soal kuis sama sekali, komponen kuis &
+     * sertifikat otomatis 0 (tidak akan pernah tercapai), jadi progress
+     * tidak lagi "jalan sendiri" tanpa aktivitas nyata dari siswa.
+     */
+    public function getProgressPercentAttribute(): int
+    {
+        $totalDays = $this->started_at->diffInDays($this->ends_at) ?: 30;
+        $elapsedDays = min($totalDays, $this->started_at->diffInDays(now()));
+
+        $timeProgress = ($elapsedDays / $totalDays) * 50;
+        $quizProgress = $this->sudah_mengerjakan_kuis ? 30 : 0;
+        $certificateProgress = $this->bisa_unduh_sertifikat ? 20 : 0;
+
+        return (int) round(min(100, $timeProgress + $quizProgress + $certificateProgress));
     }
 
     /**

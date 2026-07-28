@@ -30,9 +30,7 @@ class EnrollmentController extends Controller
                 'bisa_unduh_sertifikat' => $enrollment->bisa_unduh_sertifikat,
                 'can_access_content' => ! $enrollment->sudah_selesai,
                 'score' => $enrollment->score,
-                'progress' => $enrollment->sudah_selesai
-                    ? 100
-                    : max(12, min(100, (int) round(100 - (($enrollment->sisa_hari / 30) * 100)))),
+                'progress' => $enrollment->progress_percent,
                 'course' => [
                     'id' => $enrollment->course->id,
                     'nama_kursus' => $enrollment->course->nama_kursus,

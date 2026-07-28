@@ -117,7 +117,7 @@
             <tr>
                 <td style="width: 50%;">
                     <div class="footer-line">
-                        {{ $enrollment->course->tutor->user->name ?? 'Tutor EDUXCHANGE' }}<br>
+                        {{ $enrollment->course->tutor_display_name }}<br>
                         Tutor Pengajar
                     </div>
                 </td>

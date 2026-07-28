@@ -113,7 +113,7 @@ export default function Dashboard({ stats, popularCourses, learningSummary }) {
                                             </div>
                                             <h3 className="mt-4 text-lg font-extrabold text-slate-950">{course.nama_kursus}</h3>
                                             <p className="mt-2 text-sm font-medium text-slate-500">
-                                                Tutor: {course.tutor?.user?.name ?? 'Tutor EDUXCHANGE'}
+                                                Tutor: {course.tutor_display_name}
                                             </p>
                                             <div className="mt-5 flex items-end justify-between">
                                                 <p className="text-xl font-extrabold text-slate-950">
