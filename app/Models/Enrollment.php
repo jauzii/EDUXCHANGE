@@ -78,7 +78,7 @@ class Enrollment extends Model
     }
 
     /**
-     * Total kuis checkpoint yang tersedia di paket kursus ini (mis. 7).
+     * Total kuis checkpoint yang tersedia di paket kursus ini (mis. 2).
      */
     public function getTotalKuisAttribute(): int
     {
@@ -106,7 +106,7 @@ class Enrollment extends Model
 
     /**
      * Syarat utama sertifikat: SEMUA kuis checkpoint paket ini (mis.
-     * ke-7 nya) sudah selesai dikerjakan siswa. Kalau paketnya belum
+     * semuanya) sudah selesai dikerjakan siswa. Kalau paketnya belum
      * punya kuis sama sekali, ini selalu false (belum ada yang bisa
      * "diselesaikan").
      */
@@ -131,7 +131,7 @@ class Enrollment extends Model
      * student maupun daftar "Kelas Saya"), bukan cuma berdasarkan waktu:
      *  - 50% dari waktu akses yang sudah berjalan (maks 50)
      *  - maks 30% mengikuti proporsi kuis checkpoint yang sudah selesai
-     *    (mis. 3 dari 7 kuis = ~12.9%)
+     *    (mis. 1 dari 2 kuis = 15%)
      *  - 20% begitu SEMUA kuis selesai & sertifikat bisa diunduh
      * Kalau kursus belum punya kuis sama sekali, komponen kuis &
      * sertifikat otomatis 0 (tidak akan pernah tercapai), jadi progress

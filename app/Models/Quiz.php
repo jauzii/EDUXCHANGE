@@ -24,6 +24,14 @@ class Quiz extends Model
         return $this->hasMany(Question::class);
     }
 
+    /**
+     * Materi belajar untuk kuis/modul ini (1 kuis punya 1 materi).
+     */
+    public function materials(): HasMany
+    {
+        return $this->hasMany(Material::class);
+    }
+
     public function quizAttempts(): HasMany
     {
         return $this->hasMany(QuizAttempt::class);

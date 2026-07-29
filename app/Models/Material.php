@@ -12,6 +12,7 @@ class Material extends Model
 
     protected $fillable = [
         'course_id',
+        'quiz_id',
         'judul',
         'konten',
     ];
@@ -22,5 +23,13 @@ class Material extends Model
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    /**
+     * Kuis/modul tempat materi ini berada (1 kuis punya 1 materi).
+     */
+    public function quiz(): BelongsTo
+    {
+        return $this->belongsTo(Quiz::class);
     }
 }

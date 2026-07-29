@@ -46,7 +46,7 @@ export default function QuizIndex({ enrollment, quizzes = [] }) {
                                         <p className="text-xs font-bold uppercase tracking-wide text-indigo-600">Kuis {quiz.urutan}</p>
                                         <h3 className="mt-1 truncate text-lg font-extrabold text-slate-950">{quiz.judul}</h3>
                                         <p className="mt-1 text-sm text-slate-500">
-                                            {quiz.questions_count} soal
+                                            {quiz.materials_count > 0 ? '1 materi · ' : ''}{quiz.questions_count} soal
                                             {quiz.sudah_dikerjakan && ` · skor ${quiz.score}`}
                                         </p>
                                     </div>

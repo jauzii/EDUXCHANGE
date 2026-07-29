@@ -3,36 +3,36 @@
 namespace Database\Seeders;
 
 use App\Models\Course;
+use App\Models\Material;
 use App\Models\Question;
 use App\Models\Quiz;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 /**
- * Seeder yang menambahkan CONTOH 7 KUIS CHECKPOINT ke setiap paket kursus
- * yang SUDAH ADA di database (tidak menghapus/mengubah data lain: kursus,
+ * Seeder yang menambahkan CONTOH 2 KUIS (modul) ke setiap paket kursus
+ * yang SUDAH ADA di database, tanpa mengubah/menghapus data lain (kursus,
  * siswa, transaksi, dll). Aman dijalankan di server production:
  *
  *      php artisan migrate
  *      php artisan db:seed --class=QuizSeeder
  *
- * Cara kerja:
- * 1. Menyiapkan 7 bank soal contoh (per kategori paket kursus yang umum
- *    dipakai di EDUXCHANGE), masing-masing berisi 7 pertanyaan.
- * 2. Untuk SETIAP paket kursus yang belum punya kuis sama sekali,
- *    dibuatkan 7 baris "Quiz" (Kuis 1 s.d. Kuis 7), masing-masing diisi
- *    1 soal dari bank yang paling cocok dengan kategori/nama paketnya
- *    (fallback ke bank umum kalau tidak ada yang cocok).
- * 3. Begitu siswa menyelesaikan ke-7 kuis ini (lewat halaman "Kelas
- *    Saya" -> "Kerjakan Kuis"), sertifikat otomatis bisa diunduh.
- * 4. Idempotent: paket yang sudah punya kuis tidak akan ditambahi lagi
- *    kalau seeder ini dijalankan ulang.
+ * Struktur per paket kursus:
+ * - 2 "Quiz" (modul), masing-masing berisi:
+ *   - 1 materi belajar (bacaan singkat)
+ *   - 1 set kuis soal berisi 10 soal pilihan ganda (a/b/c/d)
+ *
+ * Soal di sini CONTOH/placeholder saja (sesuai permintaan), berlaku sama
+ * untuk semua paket kursus. Begitu siswa menyelesaikan KEDUA modul ini,
+ * sertifikat otomatis bisa diunduh.
+ *
+ * Idempotent: paket yang sudah punya kuis tidak akan ditambahi lagi kalau
+ * seeder ini dijalankan ulang.
  */
 class QuizSeeder extends Seeder
 {
     public function run(): void
     {
-        $bankSoal = $this->bankSoal();
+        $modul = $this->templateModul();
 
         $courses = Course::query()
             ->whereDoesntHave('quizzes')
@@ -46,148 +46,82 @@ class QuizSeeder extends Seeder
         }
 
         foreach ($courses as $course) {
-            $template = $this->cocokkanBankSoal($course, $bankSoal);
-
-            foreach ($template['soal'] as $urutan => $soal) {
+            foreach ($modul as $urutan => $data) {
                 $quiz = Quiz::create([
                     'course_id' => $course->id,
-                    'judul' => $soal['judul_kuis'],
+                    'judul' => $data['judul_kuis'],
                     'urutan' => $urutan + 1,
                 ]);
 
-                Question::create([
+                Material::create([
                     'course_id' => $course->id,
                     'quiz_id' => $quiz->id,
-                    'pertanyaan' => $soal['pertanyaan'],
-                    'pilihan_a' => $soal['pilihan_a'],
-                    'pilihan_b' => $soal['pilihan_b'],
-                    'pilihan_c' => $soal['pilihan_c'],
-                    'pilihan_d' => $soal['pilihan_d'],
-                    'jawaban_benar' => $soal['jawaban_benar'],
+                    'judul' => $data['materi']['judul'],
+                    'konten' => str_replace('{{nama_kursus}}', $course->nama_kursus, $data['materi']['konten']),
                 ]);
-            }
 
-            $this->command?->info("7 kuis \"{$template['label']}\" ditambahkan ke paket: {$course->nama_kursus}.");
-        }
-    }
-
-    /**
-     * Cari bank soal yang paling cocok untuk 1 paket kursus, berdasarkan
-     * kata kunci di kategori atau nama kursusnya. Fallback ke bank umum
-     * kalau tidak ada kecocokan.
-     */
-    private function cocokkanBankSoal(Course $course, array $bankSoal): array
-    {
-        $teks = Str::lower($course->kategori.' '.$course->nama_kursus);
-
-        foreach ($bankSoal as $template) {
-            foreach ($template['kata_kunci'] as $kataKunci) {
-                if (Str::contains($teks, $kataKunci)) {
-                    return $template;
+                foreach ($data['soal'] as $soal) {
+                    Question::create([
+                        'course_id' => $course->id,
+                        'quiz_id' => $quiz->id,
+                        'pertanyaan' => $soal['pertanyaan'],
+                        'pilihan_a' => $soal['pilihan_a'],
+                        'pilihan_b' => $soal['pilihan_b'],
+                        'pilihan_c' => $soal['pilihan_c'],
+                        'pilihan_d' => $soal['pilihan_d'],
+                        'jawaban_benar' => $soal['jawaban_benar'],
+                    ]);
                 }
             }
-        }
 
-        return collect($bankSoal)->firstWhere('label', 'Keterampilan Belajar Online');
+            $this->command?->info("2 kuis (masing-masing 1 materi + 10 soal) ditambahkan ke paket: {$course->nama_kursus}.");
+        }
     }
 
     /**
-     * 7 contoh bank soal (7 pertanyaan per bank = 1 pertanyaan per kuis
-     * checkpoint), masing-masing mewakili 1 kategori paket kursus yang
-     * umum di EDUXCHANGE.
+     * 2 modul contoh (materi + 10 soal pilihan ganda per modul).
+     * Kontennya generik/placeholder, sesuai permintaan ("hanya untuk
+     * contoh"), berlaku sama untuk semua paket kursus.
      */
-    private function bankSoal(): array
+    private function templateModul(): array
     {
         return [
             [
-                'label' => 'Dasar Algoritma & Pemrograman',
-                'kata_kunci' => ['program', 'algoritma', 'data', 'coding', 'developer'],
+                'judul_kuis' => 'Kuis 1: Pengenalan Modul',
+                'materi' => [
+                    'judul' => 'Pengantar Kursus',
+                    'konten' => "Selamat datang di kursus \"{{nama_kursus}}\"!\n\nSebelum mengerjakan kuis, luangkan waktu untuk membaca ringkasan materi ini terlebih dahulu. Materi pada tiap modul dirancang sebagai bacaan singkat untuk membantu kamu memahami konsep dasar sebelum diuji lewat soal pilihan ganda.\n\nSetelah selesai membaca, lanjutkan ke bagian \"Kuis soal\" di bawah untuk mengerjakan 10 soal pilihan ganda modul ini.",
+                ],
                 'soal' => [
-                    ['judul_kuis' => 'Kuis 1: Struktur Data', 'pertanyaan' => 'Struktur data apa yang bekerja dengan prinsip "masuk terakhir, keluar pertama" (LIFO)?', 'pilihan_a' => 'Queue', 'pilihan_b' => 'Stack', 'pilihan_c' => 'Array', 'pilihan_d' => 'Linked List', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 2: Algoritma Sorting', 'pertanyaan' => 'Algoritma pengurutan (sorting) yang membandingkan dan menukar elemen bersebelahan secara berulang disebut?', 'pilihan_a' => 'Bubble Sort', 'pilihan_b' => 'Binary Search', 'pilihan_c' => 'Hashing', 'pilihan_d' => 'Recursion', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 3: Kompleksitas Algoritma', 'pertanyaan' => 'Kompleksitas waktu pencarian pada array terurut menggunakan binary search adalah?', 'pilihan_a' => 'O(n)', 'pilihan_b' => 'O(n^2)', 'pilihan_c' => 'O(log n)', 'pilihan_d' => 'O(1)', 'jawaban_benar' => 'c'],
-                    ['judul_kuis' => 'Kuis 4: Variabel & Konstanta', 'pertanyaan' => 'Variabel yang nilainya tidak dapat diubah setelah didefinisikan disebut?', 'pilihan_a' => 'Constant', 'pilihan_b' => 'Pointer', 'pilihan_c' => 'Array', 'pilihan_d' => 'Loop', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 5: Rekursi', 'pertanyaan' => 'Proses memanggil fungsi yang memanggil dirinya sendiri disebut?', 'pilihan_a' => 'Iterasi', 'pilihan_b' => 'Rekursi', 'pilihan_c' => 'Deklarasi', 'pilihan_d' => 'Kompilasi', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 6: Perulangan', 'pertanyaan' => 'Perintah untuk mengulang blok kode selama kondisi tertentu terpenuhi disebut?', 'pilihan_a' => 'Loop', 'pilihan_b' => 'Class', 'pilihan_c' => 'Interface', 'pilihan_d' => 'Enum', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 7: Dasar Web', 'pertanyaan' => 'Bahasa markup yang dipakai untuk menyusun struktur halaman web adalah?', 'pilihan_a' => 'HTML', 'pilihan_b' => 'CSS', 'pilihan_c' => 'SQL', 'pilihan_d' => 'JSON', 'jawaban_benar' => 'a'],
+                    ['pertanyaan' => 'Ibu kota negara Indonesia adalah?', 'pilihan_a' => 'Jakarta', 'pilihan_b' => 'Bandung', 'pilihan_c' => 'Surabaya', 'pilihan_d' => 'Medan', 'jawaban_benar' => 'a'],
+                    ['pertanyaan' => 'Berapa hasil dari 12 x 8?', 'pilihan_a' => '88', 'pilihan_b' => '96', 'pilihan_c' => '108', 'pilihan_d' => '90', 'jawaban_benar' => 'b'],
+                    ['pertanyaan' => 'Planet yang dikenal sebagai "Planet Merah" adalah?', 'pilihan_a' => 'Venus', 'pilihan_b' => 'Mars', 'pilihan_c' => 'Jupiter', 'pilihan_d' => 'Saturnus', 'jawaban_benar' => 'b'],
+                    ['pertanyaan' => 'Bahasa resmi negara Indonesia adalah?', 'pilihan_a' => 'Bahasa Inggris', 'pilihan_b' => 'Bahasa Indonesia', 'pilihan_c' => 'Bahasa Melayu', 'pilihan_d' => 'Bahasa Belanda', 'jawaban_benar' => 'b'],
+                    ['pertanyaan' => '1 jam sama dengan berapa menit?', 'pilihan_a' => '30 menit', 'pilihan_b' => '45 menit', 'pilihan_c' => '60 menit', 'pilihan_d' => '90 menit', 'jawaban_benar' => 'c'],
+                    ['pertanyaan' => 'Air membeku pada suhu berapa derajat Celsius?', 'pilihan_a' => '0 derajat', 'pilihan_b' => '10 derajat', 'pilihan_c' => '50 derajat', 'pilihan_d' => '100 derajat', 'jawaban_benar' => 'a'],
+                    ['pertanyaan' => 'Lambang kimia untuk air adalah?', 'pilihan_a' => 'O2', 'pilihan_b' => 'CO2', 'pilihan_c' => 'H2O', 'pilihan_d' => 'NaCl', 'jawaban_benar' => 'c'],
+                    ['pertanyaan' => 'Benua terbesar di dunia adalah?', 'pilihan_a' => 'Afrika', 'pilihan_b' => 'Asia', 'pilihan_c' => 'Eropa', 'pilihan_d' => 'Australia', 'jawaban_benar' => 'b'],
+                    ['pertanyaan' => 'Dalam satu minggu terdapat berapa hari?', 'pilihan_a' => '5 hari', 'pilihan_b' => '6 hari', 'pilihan_c' => '7 hari', 'pilihan_d' => '8 hari', 'jawaban_benar' => 'c'],
+                    ['pertanyaan' => 'Warna yang dihasilkan dari campuran warna biru dan kuning adalah?', 'pilihan_a' => 'Hijau', 'pilihan_b' => 'Ungu', 'pilihan_c' => 'Oranye', 'pilihan_d' => 'Merah', 'jawaban_benar' => 'a'],
                 ],
             ],
             [
-                'label' => 'Strategi Marketing & SEO',
-                'kata_kunci' => ['marketing', 'seo', 'pemasaran', 'digital'],
-                'soal' => [
-                    ['judul_kuis' => 'Kuis 1: Dasar SEO', 'pertanyaan' => 'Apa kepanjangan dari SEO?', 'pilihan_a' => 'Search Engine Optimization', 'pilihan_b' => 'Site Engagement Overview', 'pilihan_c' => 'Search Engagement Object', 'pilihan_d' => 'Sales Effort Online', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 2: Riset Kata Kunci', 'pertanyaan' => 'Proses riset untuk menemukan istilah pencarian yang relevan dengan audiens disebut?', 'pilihan_a' => 'Keyword research', 'pilihan_b' => 'Link building', 'pilihan_c' => 'A/B testing', 'pilihan_d' => 'Retargeting', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 3: On-page vs Off-page', 'pertanyaan' => 'Optimasi SEO yang dilakukan di dalam website sendiri (judul, konten, struktur URL) disebut?', 'pilihan_a' => 'Off-page SEO', 'pilihan_b' => 'On-page SEO', 'pilihan_c' => 'Technical ads', 'pilihan_d' => 'Cold email', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 4: Metrik Website', 'pertanyaan' => 'Metrik yang mengukur persentase pengunjung yang langsung pergi setelah membuka 1 halaman disebut?', 'pilihan_a' => 'Bounce rate', 'pilihan_b' => 'Conversion rate', 'pilihan_c' => 'Click rate', 'pilihan_d' => 'Open rate', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 5: Influencer Marketing', 'pertanyaan' => 'Strategi pemasaran melalui kerja sama dengan tokoh berpengaruh di media sosial disebut?', 'pilihan_a' => 'Email marketing', 'pilihan_b' => 'Influencer marketing', 'pilihan_c' => 'Cold calling', 'pilihan_d' => 'Direct mail', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 6: Iklan Berbayar', 'pertanyaan' => 'Konten berbayar yang ditampilkan di bagian atas hasil pencarian disebut?', 'pilihan_a' => 'Iklan PPC/SEM', 'pilihan_b' => 'Organic post', 'pilihan_c' => 'Backlink', 'pilihan_d' => 'Newsletter', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 7: Email Marketing', 'pertanyaan' => 'Email yang dikirim rutin ke pelanggan berisi promo atau info terbaru disebut?', 'pilihan_a' => 'Cold calling', 'pilihan_b' => 'Email marketing', 'pilihan_c' => 'Billboard', 'pilihan_d' => 'Radio ads', 'jawaban_benar' => 'b'],
+                'judul_kuis' => 'Kuis 2: Pendalaman & Evaluasi',
+                'materi' => [
+                    'judul' => 'Pendalaman & Evaluasi',
+                    'konten' => "Kamu sudah menyelesaikan modul pertama, lanjutkan ke modul kedua!\n\nModul ini membahas bagaimana proses belajar di \"{{nama_kursus}}\" dievaluasi lewat kuis, dan bagaimana sertifikat kelulusan bisa didapatkan. Pahami dulu alurnya lewat bacaan singkat ini sebelum mengerjakan 10 soal pilihan ganda modul kedua.\n\nSetelah modul ke-2 ini selesai (kuis terjawab semua), sertifikat kelulusan kamu untuk paket ini akan langsung bisa diunduh.",
                 ],
-            ],
-            [
-                'label' => 'Dasar UI/UX & Desain',
-                'kata_kunci' => ['desain', 'design', 'ui', 'ux', 'grafis'],
                 'soal' => [
-                    ['judul_kuis' => 'Kuis 1: Wireframe', 'pertanyaan' => 'Sketsa kasar tata letak antarmuka tanpa detail visual seperti warna disebut?', 'pilihan_a' => 'Prototype', 'pilihan_b' => 'Wireframe', 'pilihan_c' => 'Mockup', 'pilihan_d' => 'Storyboard', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 2: Prinsip Desain', 'pertanyaan' => 'Prinsip desain yang menekankan konsistensi jarak antar elemen disebut?', 'pilihan_a' => 'Kontras', 'pilihan_b' => 'Spacing/whitespace', 'pilihan_c' => 'Gradasi', 'pilihan_d' => 'Skala', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 3: UX vs UI', 'pertanyaan' => 'UX (User Experience) paling berfokus pada?', 'pilihan_a' => 'Warna dan tipografi', 'pilihan_b' => 'Pengalaman pengguna secara keseluruhan', 'pilihan_c' => 'Bahasa pemrograman', 'pilihan_d' => 'Ukuran file gambar', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 4: Pendekatan Desain', 'pertanyaan' => 'Pendekatan desain yang menempatkan kebutuhan pengguna sebagai prioritas utama disebut?', 'pilihan_a' => 'Server-centered design', 'pilihan_b' => 'User-centered design', 'pilihan_c' => 'Data-first design', 'pilihan_d' => 'Code-first design', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 5: Teori Warna', 'pertanyaan' => 'Warna yang bertolak belakang dalam roda warna (color wheel) disebut?', 'pilihan_a' => 'Warna analog', 'pilihan_b' => 'Warna komplementer', 'pilihan_c' => 'Warna monokrom', 'pilihan_d' => 'Warna pastel', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 6: Tipografi', 'pertanyaan' => 'Jarak antar huruf dalam tipografi disebut?', 'pilihan_a' => 'Kerning', 'pilihan_b' => 'Padding', 'pilihan_c' => 'Margin', 'pilihan_d' => 'Grid', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 7: Grid System', 'pertanyaan' => 'Grid system dipakai dalam desain untuk?', 'pilihan_a' => 'Menyusun tata letak yang konsisten', 'pilihan_b' => 'Menyimpan file', 'pilihan_c' => 'Mengompres gambar', 'pilihan_d' => 'Mengubah warna', 'jawaban_benar' => 'a'],
-                ],
-            ],
-            [
-                'label' => 'Pendidikan Kewarganegaraan',
-                'kata_kunci' => ['kewarganegaraan', 'pancasila', 'ppkn', 'negara'],
-                'soal' => [
-                    ['judul_kuis' => 'Kuis 1: Sejarah Pancasila', 'pertanyaan' => 'Pancasila sebagai dasar negara Indonesia disahkan pada tanggal?', 'pilihan_a' => '17 Agustus 1945', 'pilihan_b' => '18 Agustus 1945', 'pilihan_c' => '1 Juni 1945', 'pilihan_d' => '28 Oktober 1928', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 2: Sila Pancasila', 'pertanyaan' => 'Sila keberapa dalam Pancasila yang berbunyi "Persatuan Indonesia"?', 'pilihan_a' => 'Sila ke-2', 'pilihan_b' => 'Sila ke-3', 'pilihan_c' => 'Sila ke-4', 'pilihan_d' => 'Sila ke-5', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 3: Konstitusi', 'pertanyaan' => 'Undang-Undang Dasar yang menjadi konstitusi tertulis Indonesia adalah?', 'pilihan_a' => 'UUD 1945', 'pilihan_b' => 'UU ITE', 'pilihan_c' => 'UU Otonomi Daerah', 'pilihan_d' => 'UU Ketenagakerjaan', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 4: Lembaga Negara', 'pertanyaan' => 'Lembaga yang memiliki kewenangan menguji undang-undang terhadap UUD 1945 adalah?', 'pilihan_a' => 'Mahkamah Konstitusi', 'pilihan_b' => 'Kepolisian', 'pilihan_c' => 'DPRD', 'pilihan_d' => 'KPU', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 5: Semboyan Negara', 'pertanyaan' => 'Semboyan negara Indonesia yang berarti "berbeda-beda tetapi tetap satu" adalah?', 'pilihan_a' => 'Tut Wuri Handayani', 'pilihan_b' => 'Bhinneka Tunggal Ika', 'pilihan_c' => 'Garuda Pancasila', 'pilihan_d' => 'Ing Ngarso Sung Tuladha', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 6: Hari Lahir Pancasila', 'pertanyaan' => 'Hari Lahir Pancasila diperingati setiap tanggal?', 'pilihan_a' => '1 Juni', 'pilihan_b' => '17 Agustus', 'pilihan_c' => '28 Oktober', 'pilihan_d' => '10 November', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 7: Penyelenggara Pemilu', 'pertanyaan' => 'Lembaga yang bertugas menyelenggarakan pemilu di Indonesia adalah?', 'pilihan_a' => 'KPU', 'pilihan_b' => 'MK', 'pilihan_c' => 'BPK', 'pilihan_d' => 'DPD', 'jawaban_benar' => 'a'],
-                ],
-            ],
-            [
-                'label' => 'Dasar Kewirausahaan & Bisnis',
-                'kata_kunci' => ['bisnis', 'wirausaha', 'usaha', 'entrepreneur'],
-                'soal' => [
-                    ['judul_kuis' => 'Kuis 1: Rencana Bisnis', 'pertanyaan' => 'Dokumen yang merangkum rencana bisnis secara keseluruhan disebut?', 'pilihan_a' => 'Business plan', 'pilihan_b' => 'Invoice', 'pilihan_c' => 'Purchase order', 'pilihan_d' => 'Payslip', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 2: Analisis SWOT', 'pertanyaan' => 'Analisis kekuatan, kelemahan, peluang, dan ancaman suatu bisnis disebut?', 'pilihan_a' => 'SWOT', 'pilihan_b' => 'ROI', 'pilihan_c' => 'KPI', 'pilihan_d' => 'CRM', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 3: Laba Rugi', 'pertanyaan' => 'Selisih antara pendapatan dan biaya dalam suatu usaha disebut?', 'pilihan_a' => 'Modal', 'pilihan_b' => 'Laba/rugi', 'pilihan_c' => 'Aset', 'pilihan_d' => 'Utang', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 4: Target Pasar', 'pertanyaan' => 'Kelompok orang yang menjadi sasaran penjualan produk disebut?', 'pilihan_a' => 'Supplier', 'pilihan_b' => 'Target pasar', 'pilihan_c' => 'Kompetitor', 'pilihan_d' => 'Distributor', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 5: Sumber Modal', 'pertanyaan' => 'Modal yang berasal dari kepemilikan pribadi pemilik usaha disebut?', 'pilihan_a' => 'Modal asing', 'pilihan_b' => 'Modal sendiri', 'pilihan_c' => 'Modal pinjaman', 'pilihan_d' => 'Modal ventura', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 6: Penjualan Langsung', 'pertanyaan' => 'Kegiatan menjajakan produk secara langsung ke calon pembeli disebut?', 'pilihan_a' => 'Direct selling', 'pilihan_b' => 'Outsourcing', 'pilihan_c' => 'Auditing', 'pilihan_d' => 'Budgeting', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 7: Bukti Transaksi', 'pertanyaan' => 'Dokumen bukti transaksi penjualan kepada pelanggan disebut?', 'pilihan_a' => 'Invoice/nota', 'pilihan_b' => 'CV', 'pilihan_c' => 'Proposal', 'pilihan_d' => 'Kontrak kerja', 'jawaban_benar' => 'a'],
-                ],
-            ],
-            [
-                'label' => 'Bahasa Inggris Dasar',
-                'kata_kunci' => ['bahasa inggris', 'english', 'toefl', 'grammar'],
-                'soal' => [
-                    ['judul_kuis' => 'Kuis 1: Past Tense', 'pertanyaan' => 'Bentuk lampau (past tense) dari kata kerja "go" adalah?', 'pilihan_a' => 'Goed', 'pilihan_b' => 'Went', 'pilihan_c' => 'Gone', 'pilihan_d' => 'Going', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 2: To Be', 'pertanyaan' => 'Kalimat "She ___ a student" yang tepat menggunakan kata kerja bantu?', 'pilihan_a' => 'is', 'pilihan_b' => 'are', 'pilihan_c' => 'am', 'pilihan_d' => 'be', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 3: Jenis Kata', 'pertanyaan' => 'Kata yang berfungsi menggantikan kata benda disebut?', 'pilihan_a' => 'Verb', 'pilihan_b' => 'Adjective', 'pilihan_c' => 'Pronoun', 'pilihan_d' => 'Adverb', 'jawaban_benar' => 'c'],
-                    ['judul_kuis' => 'Kuis 4: Antonim', 'pertanyaan' => 'Antonim (lawan kata) dari "difficult" adalah?', 'pilihan_a' => 'Hard', 'pilihan_b' => 'Easy', 'pilihan_c' => 'Complex', 'pilihan_d' => 'Tough', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 5: Future Tense', 'pertanyaan' => 'Struktur kalimat "Subject + will + verb1" digunakan untuk tenses?', 'pilihan_a' => 'Present tense', 'pilihan_b' => 'Past tense', 'pilihan_c' => 'Future tense', 'pilihan_d' => 'Perfect tense', 'jawaban_benar' => 'c'],
-                    ['judul_kuis' => 'Kuis 6: Adjective', 'pertanyaan' => 'Kata "beautiful" termasuk jenis kata?', 'pilihan_a' => 'Verb', 'pilihan_b' => 'Adjective', 'pilihan_c' => 'Noun', 'pilihan_d' => 'Adverb', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 7: Kalimat Tanya', 'pertanyaan' => 'Bentuk kalimat tanya yang benar untuk "You are a student" adalah?', 'pilihan_a' => 'You are a student?', 'pilihan_b' => 'Are you a student?', 'pilihan_c' => 'Is you a student?', 'pilihan_d' => 'Do you a student?', 'jawaban_benar' => 'b'],
-                ],
-            ],
-            [
-                'label' => 'Keterampilan Belajar Online',
-                'kata_kunci' => [],
-                'soal' => [
-                    ['judul_kuis' => 'Kuis 1: Manajemen Waktu', 'pertanyaan' => 'Membuat jadwal belajar yang teratur setiap hari termasuk contoh dari?', 'pilihan_a' => 'Manajemen waktu', 'pilihan_b' => 'Manajemen keuangan', 'pilihan_c' => 'Manajemen risiko', 'pilihan_d' => 'Manajemen proyek', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 2: Mencatat Ulang', 'pertanyaan' => 'Mencatat ulang materi dengan bahasa sendiri setelah belajar bertujuan untuk?', 'pilihan_a' => 'Menghabiskan waktu', 'pilihan_b' => 'Memperkuat pemahaman/ingatan', 'pilihan_c' => 'Menambah nilai tugas', 'pilihan_d' => 'Mengurangi fokus', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 3: Istirahat Belajar', 'pertanyaan' => 'Istirahat singkat di sela sesi belajar (misalnya teknik Pomodoro) berguna untuk?', 'pilihan_a' => 'Menjaga fokus dan mencegah kelelahan', 'pilihan_b' => 'Memperlambat progres belajar', 'pilihan_c' => 'Menambah beban tugas', 'pilihan_d' => 'Mengurangi motivasi', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 4: Target Belajar', 'pertanyaan' => 'Menetapkan target belajar yang spesifik dan terukur termasuk prinsip?', 'pilihan_a' => 'SWOT', 'pilihan_b' => 'SMART goal', 'pilihan_c' => 'SEO', 'pilihan_d' => 'ATM', 'jawaban_benar' => 'b'],
-                    ['judul_kuis' => 'Kuis 5: Manfaat Kuis', 'pertanyaan' => 'Mengerjakan kuis di akhir materi berguna untuk?', 'pilihan_a' => 'Mengukur pemahaman terhadap materi', 'pilihan_b' => 'Mengganti materi lama', 'pilihan_c' => 'Menghapus riwayat belajar', 'pilihan_d' => 'Menambah durasi akses', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 6: Konsolidasi Ingatan', 'pertanyaan' => 'Membaca ulang catatan sebelum tidur membantu proses apa pada otak?', 'pilihan_a' => 'Konsolidasi memori/ingatan', 'pilihan_b' => 'Menghapus ingatan', 'pilihan_c' => 'Menambah kantuk saja', 'pilihan_d' => 'Mengurangi fokus', 'jawaban_benar' => 'a'],
-                    ['judul_kuis' => 'Kuis 7: Syarat Sertifikat', 'pertanyaan' => 'Menyelesaikan semua kuis checkpoint sampai tuntas adalah syarat untuk?', 'pilihan_a' => 'Menghapus akun', 'pilihan_b' => 'Membuka sertifikat kelulusan', 'pilihan_c' => 'Mengurangi harga paket', 'pilihan_d' => 'Memperpanjang masa akses otomatis', 'jawaban_benar' => 'b'],
+                    ['pertanyaan' => 'Membaca materi sebelum mengerjakan kuis bertujuan untuk?', 'pilihan_a' => 'Membuang waktu', 'pilihan_b' => 'Memahami konsep sebelum diuji', 'pilihan_c' => 'Menambah nilai secara otomatis', 'pilihan_d' => 'Mengganti jawaban benar', 'jawaban_benar' => 'b'],
+                    ['pertanyaan' => 'Satu modul pembelajaran pada kursus ini biasanya terdiri dari?', 'pilihan_a' => 'Materi dan kuis', 'pilihan_b' => 'Hanya sertifikat', 'pilihan_c' => 'Hanya riwayat transaksi', 'pilihan_d' => 'Hanya halaman profil', 'jawaban_benar' => 'a'],
+                    ['pertanyaan' => 'Setiap soal pilihan ganda pada kuis ini terdiri dari berapa opsi jawaban?', 'pilihan_a' => '2 opsi', 'pilihan_b' => '3 opsi', 'pilihan_c' => '4 opsi', 'pilihan_d' => '5 opsi', 'jawaban_benar' => 'c'],
+                    ['pertanyaan' => 'Nilai (skor) sebuah kuis dihitung berdasarkan?', 'pilihan_a' => 'Jumlah soal yang terjawab benar', 'pilihan_b' => 'Lama waktu pengerjaan', 'pilihan_c' => 'Jumlah huruf pada jawaban', 'pilihan_d' => 'Warna tampilan halaman', 'jawaban_benar' => 'a'],
+                    ['pertanyaan' => 'Sertifikat kelulusan pada paket kursus ini terbuka setelah?', 'pilihan_a' => 'Mendaftar akun', 'pilihan_b' => 'Menyelesaikan semua kuis checkpoint', 'pilihan_c' => 'Melihat halaman paket kursus', 'pilihan_d' => 'Login untuk pertama kali', 'jawaban_benar' => 'b'],
+                    ['pertanyaan' => 'Tujuan utama diadakannya kuis di akhir setiap modul adalah?', 'pilihan_a' => 'Mengukur pemahaman peserta terhadap materi', 'pilihan_b' => 'Mempercantik tampilan halaman', 'pilihan_c' => 'Mengganti nama peserta', 'pilihan_d' => 'Menghapus data lama', 'jawaban_benar' => 'a'],
+                    ['pertanyaan' => 'Sebelum menekan tombol submit kuis, sebaiknya peserta?', 'pilihan_a' => 'Membiarkan beberapa soal kosong', 'pilihan_b' => 'Memastikan semua soal sudah dijawab', 'pilihan_c' => 'Menutup halaman begitu saja', 'pilihan_d' => 'Mematikan koneksi internet', 'jawaban_benar' => 'b'],
+                    ['pertanyaan' => 'Setelah kuis pertama (modul 1) selesai dikerjakan, langkah berikutnya adalah?', 'pilihan_a' => 'Mengulang kuis pertama terus-menerus', 'pilihan_b' => 'Melanjutkan ke kuis/modul berikutnya', 'pilihan_c' => 'Menghapus akun', 'pilihan_d' => 'Keluar dari aplikasi secara permanen', 'jawaban_benar' => 'b'],
+                    ['pertanyaan' => 'Bagian "Materi" pada tiap modul berfungsi sebagai?', 'pilihan_a' => 'Bahan bacaan sebelum mengerjakan kuis', 'pilihan_b' => 'Pengganti sertifikat', 'pilihan_c' => 'Riwayat transaksi pembayaran', 'pilihan_d' => 'Data pribadi pengguna', 'jawaban_benar' => 'a'],
+                    ['pertanyaan' => 'Soal-soal pada 2 kuis contoh ini sifatnya?', 'pilihan_a' => 'Data resmi dari tutor yang tidak boleh diubah', 'pilihan_b' => 'Placeholder/contoh yang bisa diganti admin kapan saja', 'pilihan_c' => 'Rahasia dan tidak boleh dilihat siapa pun', 'pilihan_d' => 'Otomatis terhapus setelah 30 hari', 'jawaban_benar' => 'b'],
                 ],
             ],
         ];

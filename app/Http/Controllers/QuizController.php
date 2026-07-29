@@ -13,7 +13,7 @@ use Inertia\Response;
 class QuizController extends Controller
 {
     /**
-     * Daftar semua kuis checkpoint (mis. 7 kuis) untuk 1 paket kursus yang
+     * Daftar semua kuis checkpoint (mis. 2 kuis) untuk 1 paket kursus yang
      * sedang diikuti, lengkap dengan status per kuis (sudah/belum
      * dikerjakan beserta skornya). Sertifikat baru terbuka kalau SEMUA
      * kuis di sini sudah selesai.
@@ -26,6 +26,7 @@ class QuizController extends Controller
 
         $quizzes = $enrollment->course->quizzes()
             ->withCount('questions')
+            ->withCount('materials')
             ->get()
             ->map(function (Quiz $quiz) use ($enrollment) {
                 $attempt = $enrollment->quizAttempts->firstWhere('quiz_id', $quiz->id);
@@ -35,6 +36,7 @@ class QuizController extends Controller
                     'judul' => $quiz->judul,
                     'urutan' => $quiz->urutan,
                     'questions_count' => $quiz->questions_count,
+                    'materials_count' => $quiz->materials_count,
                     'sudah_dikerjakan' => (bool) $attempt,
                     'score' => $attempt?->score,
                 ];
@@ -72,7 +74,7 @@ class QuizController extends Controller
                 ->with('error', 'Masa akses paket ini sudah habis. Daftar ulang paket untuk mengerjakan kuis lagi.');
         }
 
-        $quiz->load('questions');
+        $quiz->load(['questions', 'materials']);
 
         if ($quiz->questions->isEmpty()) {
             return redirect()
@@ -84,6 +86,8 @@ class QuizController extends Controller
         $jawabanSebelumnya = $enrollment->quizAnswers()
             ->whereIn('question_id', $quiz->questions->pluck('id'))
             ->pluck('jawaban_dipilih', 'question_id');
+
+        $materi = $quiz->materials->first();
 
         return Inertia::render('Quiz/Create', [
             'enrollment' => [
@@ -98,6 +102,10 @@ class QuizController extends Controller
                 'judul' => $quiz->judul,
                 'urutan' => $quiz->urutan,
             ],
+            'materi' => $materi ? [
+                'judul' => $materi->judul,
+                'konten' => $materi->konten,
+            ] : null,
             'totalKuis' => $enrollment->total_kuis,
             'questions' => $quiz->questions
                 ->values()
@@ -119,7 +127,7 @@ class QuizController extends Controller
      * Simpan jawaban 1 kuis checkpoint, hitung skor kuis ini, catat
      * sebagai selesai (quiz_attempts), lalu perbarui rata-rata nilai
      * enrollment. Sertifikat otomatis terbuka begitu checkpoint terakhir
-     * (ke-7) tersimpan di sini.
+     * (kuis terakhir) tersimpan di sini.
      */
     public function store(Request $request, Enrollment $enrollment, Quiz $quiz): RedirectResponse
     {

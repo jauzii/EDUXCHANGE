@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 const optionLabels = ['a', 'b', 'c', 'd'];
 
-export default function QuizCreate({ enrollment, quiz, totalKuis = 0, questions = [], jawabanSebelumnya = {} }) {
+export default function QuizCreate({ enrollment, quiz, materi = null, totalKuis = 0, questions = [], jawabanSebelumnya = {} }) {
     const initialAnswers = questions.reduce((answers, question) => ({
         ...answers,
         [question.id]: jawabanSebelumnya[question.id] || '',
@@ -53,7 +53,24 @@ export default function QuizCreate({ enrollment, quiz, totalKuis = 0, questions 
                         </div>
                     </section>
 
+                    {materi && (
+                        <section className="rounded-3xl border border-indigo-100 bg-indigo-50/60 p-6 shadow-sm">
+                            <p className="text-xs font-bold uppercase tracking-wide text-indigo-600">Materi</p>
+                            <h2 className="mt-2 text-xl font-extrabold text-slate-950">{materi.judul}</h2>
+                            <div className="mt-4 whitespace-pre-line text-sm leading-7 text-slate-700">
+                                {materi.konten}
+                            </div>
+                        </section>
+                    )}
+
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+                            <p className="text-sm font-bold uppercase tracking-wide text-indigo-700">Kuis soal</p>
+                            <p className="mt-1 text-sm text-slate-600">
+                                Setelah membaca materi di atas, jawab {questions.length} soal pilihan ganda berikut ini.
+                            </p>
+                        </div>
+
                         {questions.map((question, index) => (
                             <section key={question.id} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
                                 <div className="flex items-start gap-4">
