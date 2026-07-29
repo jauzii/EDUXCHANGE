@@ -64,10 +64,21 @@ class Course extends Model
     }
 
     /**
-     * Soal-soal kuis untuk kursus ini.
+     * Soal-soal kuis untuk kursus ini (relasi lama, dipertahankan supaya
+     * data lama tetap terbaca).
      */
     public function questions(): HasMany
     {
         return $this->hasMany(Question::class);
+    }
+
+    /**
+     * Kuis-kuis checkpoint untuk kursus ini (mis. 7 kuis per paket).
+     * Siswa harus menyelesaikan SEMUA kuis di sini sebelum sertifikat
+     * bisa diunduh.
+     */
+    public function quizzes(): HasMany
+    {
+        return $this->hasMany(Quiz::class)->orderBy('urutan');
     }
 }

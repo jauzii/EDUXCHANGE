@@ -57,7 +57,8 @@ class EnrollmentController extends Controller
         $enrollment->load([
             'course.tutor.user',
             'course.materials',
-            'course.questions',
+            'course.quizzes',
+            'quizAttempts',
         ]);
 
         $totalDays = $enrollment->started_at->diffInDays($enrollment->ends_at) ?: 30;
@@ -73,6 +74,9 @@ class EnrollmentController extends Controller
                 'sudah_selesai' => $enrollment->sudah_selesai,
                 'sudah_mengerjakan_kuis' => $enrollment->sudah_mengerjakan_kuis,
                 'bisa_unduh_sertifikat' => $enrollment->bisa_unduh_sertifikat,
+                'total_kuis' => $enrollment->total_kuis,
+                'kuis_selesai' => $enrollment->kuis_selesai,
+                'can_access_content' => ! $enrollment->sudah_selesai,
                 'score' => $enrollment->score,
                 'time_progress' => $timeProgress,
                 'course' => [
@@ -90,7 +94,6 @@ class EnrollmentController extends Controller
                             'judul' => $material->judul,
                             'konten' => $material->konten,
                         ]),
-                    'questions_count' => $enrollment->course->questions->count(),
                 ],
             ],
         ]);

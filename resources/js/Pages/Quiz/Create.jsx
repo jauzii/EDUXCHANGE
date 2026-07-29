@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 const optionLabels = ['a', 'b', 'c', 'd'];
 
-export default function QuizCreate({ enrollment, questions = [], jawabanSebelumnya = {} }) {
+export default function QuizCreate({ enrollment, quiz, totalKuis = 0, questions = [], jawabanSebelumnya = {} }) {
     const initialAnswers = questions.reduce((answers, question) => ({
         ...answers,
         [question.id]: jawabanSebelumnya[question.id] || '',
@@ -18,7 +18,7 @@ export default function QuizCreate({ enrollment, questions = [], jawabanSebelumn
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        post(route('quiz.store', enrollment.id));
+        post(route('quiz.store', [enrollment.id, quiz.id]));
     };
 
     const chooseAnswer = (questionId, option) => {
@@ -35,10 +35,12 @@ export default function QuizCreate({ enrollment, questions = [], jawabanSebelumn
                     <section className="rounded-[2rem] bg-slate-950 p-8 text-white shadow-xl shadow-slate-200">
                         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
                             <div>
-                                <p className="text-sm font-bold uppercase tracking-wide text-indigo-200">Kuis kelas</p>
-                                <h1 className="mt-3 text-4xl font-extrabold tracking-tight">{enrollment.course.nama_kursus}</h1>
+                                <p className="text-sm font-bold uppercase tracking-wide text-indigo-200">
+                                    {enrollment.course.nama_kursus} · Kuis {quiz.urutan} dari {totalKuis}
+                                </p>
+                                <h1 className="mt-3 text-4xl font-extrabold tracking-tight">{quiz.judul}</h1>
                                 <p className="mt-4 max-w-2xl text-slate-300">
-                                    Jawab semua soal pilihan ganda. Nilai akan dihitung otomatis setelah submit.
+                                    Jawab semua soal pilihan ganda. Nilai kuis ini dihitung otomatis setelah submit.
                                 </p>
                             </div>
                             <div className="rounded-3xl bg-white/10 p-5 ring-1 ring-white/10">
@@ -107,10 +109,10 @@ export default function QuizCreate({ enrollment, questions = [], jawabanSebelumn
 
                         <div className="flex flex-col-reverse justify-between gap-3 sm:flex-row sm:items-center">
                             <Link
-                                href={route('enrollments.show', enrollment.id)}
+                                href={route('quiz.index', enrollment.id)}
                                 className="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 transition hover:border-indigo-200 hover:bg-indigo-50 hover:text-indigo-700"
                             >
-                                Kembali ke Kelas
+                                Kembali ke Daftar Kuis
                             </Link>
                             <button
                                 type="submit"

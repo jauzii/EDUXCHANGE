@@ -54,8 +54,9 @@ Route::middleware('auth')->group(function () {
         Route::get('/kelas-saya', [EnrollmentController::class, 'index'])->name('enrollments.index');
         Route::get('/kelas-saya/{enrollment}', [EnrollmentController::class, 'show'])->name('enrollments.show');
 
-        Route::get('/kelas-saya/{enrollment}/kuis', [QuizController::class, 'create'])->name('quiz.create');
-        Route::post('/kelas-saya/{enrollment}/kuis', [QuizController::class, 'store'])->name('quiz.store');
+        Route::get('/kelas-saya/{enrollment}/kuis', [QuizController::class, 'index'])->name('quiz.index');
+        Route::get('/kelas-saya/{enrollment}/kuis/{quiz}', [QuizController::class, 'create'])->name('quiz.create');
+        Route::post('/kelas-saya/{enrollment}/kuis/{quiz}', [QuizController::class, 'store'])->name('quiz.store');
 
         Route::get('/kelas-saya/{enrollment}/sertifikat', [CertificateController::class, 'download'])->name('certificate.download');
     });

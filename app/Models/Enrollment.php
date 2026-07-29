@@ -43,6 +43,15 @@ class Enrollment extends Model
         return $this->hasMany(QuizAnswer::class);
     }
 
+    /**
+     * Riwayat checkpoint kuis yang sudah diselesaikan siswa untuk
+     * enrollment ini (1 baris = 1 kuis yang sudah dikerjakan).
+     */
+    public function quizAttempts(): HasMany
+    {
+        return $this->hasMany(QuizAttempt::class);
+    }
+
     public function certificate(): HasOne
     {
         return $this->hasOne(Certificate::class);
@@ -69,7 +78,26 @@ class Enrollment extends Model
     }
 
     /**
-     * Apakah siswa sudah mengerjakan kuis kursus ini minimal sekali.
+     * Total kuis checkpoint yang tersedia di paket kursus ini (mis. 7).
+     */
+    public function getTotalKuisAttribute(): int
+    {
+        return $this->course->quizzes()->count();
+    }
+
+    /**
+     * Sudah berapa kuis checkpoint yang selesai dikerjakan siswa untuk
+     * enrollment ini.
+     */
+    public function getKuisSelesaiAttribute(): int
+    {
+        return $this->quizAttempts()->count();
+    }
+
+    /**
+     * Apakah siswa sudah mengerjakan kuis kursus ini minimal sekali
+     * (dipakai untuk tampilan "Nilai Kuis" berjalan, sebelum semua
+     * checkpoint selesai).
      */
     public function getSudahMengerjakanKuisAttribute(): bool
     {
@@ -77,13 +105,24 @@ class Enrollment extends Model
     }
 
     /**
-     * Syarat sertifikat: siswa sudah menyelesaikan (menjawab) semua soal
-     * kuis kursus ini. Tidak perlu menunggu masa akses 30 hari berakhir,
-     * supaya sertifikat langsung tercetak begitu kuis selesai dikerjakan.
+     * Syarat utama sertifikat: SEMUA kuis checkpoint paket ini (mis.
+     * ke-7 nya) sudah selesai dikerjakan siswa. Kalau paketnya belum
+     * punya kuis sama sekali, ini selalu false (belum ada yang bisa
+     * "diselesaikan").
+     */
+    public function getSudahMenyelesaikanSemuaKuisAttribute(): bool
+    {
+        return $this->total_kuis > 0 && $this->kuis_selesai >= $this->total_kuis;
+    }
+
+    /**
+     * Syarat sertifikat: siswa sudah menyelesaikan SEMUA kuis checkpoint
+     * paket ini. Tidak perlu menunggu masa akses 30 hari berakhir, supaya
+     * sertifikat langsung tercetak begitu kuis terakhir selesai dikerjakan.
      */
     public function getBisaUnduhSertifikatAttribute(): bool
     {
-        return $this->sudah_mengerjakan_kuis;
+        return $this->sudah_menyelesaikan_semua_kuis;
     }
 
     /**
@@ -91,9 +130,10 @@ class Enrollment extends Model
      * Disusun dari 3 komponen supaya SINKRON di semua halaman (dashboard
      * student maupun daftar "Kelas Saya"), bukan cuma berdasarkan waktu:
      *  - 50% dari waktu akses yang sudah berjalan (maks 50)
-     *  - 30% begitu kuis kursus ini sudah dikerjakan
-     *  - 20% begitu sertifikat sudah bisa diunduh
-     * Kalau kursus belum punya soal kuis sama sekali, komponen kuis &
+     *  - maks 30% mengikuti proporsi kuis checkpoint yang sudah selesai
+     *    (mis. 3 dari 7 kuis = ~12.9%)
+     *  - 20% begitu SEMUA kuis selesai & sertifikat bisa diunduh
+     * Kalau kursus belum punya kuis sama sekali, komponen kuis &
      * sertifikat otomatis 0 (tidak akan pernah tercapai), jadi progress
      * tidak lagi "jalan sendiri" tanpa aktivitas nyata dari siswa.
      */
@@ -103,30 +143,23 @@ class Enrollment extends Model
         $elapsedDays = min($totalDays, $this->started_at->diffInDays(now()));
 
         $timeProgress = ($elapsedDays / $totalDays) * 50;
-        $quizProgress = $this->sudah_mengerjakan_kuis ? 30 : 0;
+        $quizProgress = $this->total_kuis > 0 ? ($this->kuis_selesai / $this->total_kuis) * 30 : 0;
         $certificateProgress = $this->bisa_unduh_sertifikat ? 20 : 0;
 
         return (int) round(min(100, $timeProgress + $quizProgress + $certificateProgress));
     }
 
     /**
-     * Hitung ulang nilai berdasarkan jawaban kuis yang tersimpan, lalu simpan ke kolom score.
+     * Hitung ulang nilai rata-rata enrollment ini dari semua checkpoint
+     * kuis yang sudah pernah diselesaikan, lalu simpan ke kolom score.
+     * Dipanggil setiap kali 1 kuis checkpoint baru saja disubmit.
      */
-    public function hitungNilai(): int
+    public function recalculateScore(): int
     {
-        $total = $this->quizAnswers()->count();
+        $rataRata = (int) round($this->quizAttempts()->avg('score') ?? 0);
 
-        if ($total === 0) {
-            $this->update(['score' => 0]);
+        $this->update(['score' => $rataRata]);
 
-            return 0;
-        }
-
-        $benar = $this->quizAnswers()->where('is_benar', true)->count();
-        $nilai = (int) round(($benar / $total) * 100);
-
-        $this->update(['score' => $nilai]);
-
-        return $nilai;
+        return $rataRata;
     }
 }

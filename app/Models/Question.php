@@ -13,6 +13,7 @@ class Question extends Model
 
     protected $fillable = [
         'course_id',
+        'quiz_id',
         'pertanyaan',
         'pilihan_a',
         'pilihan_b',
@@ -24,6 +25,11 @@ class Question extends Model
     public function course(): BelongsTo
     {
         return $this->belongsTo(Course::class);
+    }
+
+    public function quiz(): BelongsTo
+    {
+        return $this->belongsTo(Quiz::class);
     }
 
     public function quizAnswers(): HasMany

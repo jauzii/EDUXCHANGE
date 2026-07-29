@@ -33,7 +33,7 @@ export default function EnrollmentShow({ enrollment }) {
                         {[
                             ['Tutor Pengajar', course.tutor?.name || 'Tutor EDUXCHANGE'],
                             ['Kategori', course.kategori || 'Paket Belajar'],
-                            ['Nilai Kuis', enrollment.sudah_mengerjakan_kuis ? enrollment.score : 'Belum dikerjakan'],
+                            ['Kuis Selesai', `${enrollment.kuis_selesai} / ${enrollment.total_kuis}`],
                             ['Sertifikat', enrollment.bisa_unduh_sertifikat ? 'Tersedia' : 'Belum tersedia'],
                         ].map(([label, value]) => (
                             <div key={label} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -50,17 +50,17 @@ export default function EnrollmentShow({ enrollment }) {
                                 <h2 className="mt-2 text-2xl font-extrabold text-slate-950">Checkpoint penyelesaian kelas</h2>
                                 <p className="mt-2 text-sm text-slate-600">
                                     {enrollment.can_access_content
-                                        ? `${course.questions_count} soal tersedia untuk mengukur pemahaman kamu.`
+                                        ? `Ada ${enrollment.total_kuis} kuis checkpoint di paket ini. Selesaikan semuanya untuk membuka sertifikat.`
                                         : 'Masa akses paket sudah habis. Daftar ulang untuk membuka materi dan kuis lagi.'}
                                 </p>
                             </div>
                             <div className="flex flex-col gap-3 sm:flex-row">
-                                {enrollment.can_access_content && course.questions_count > 0 && (
+                                {enrollment.can_access_content && enrollment.total_kuis > 0 && (
                                     <a
-                                        href={route('quiz.create', enrollment.id)}
+                                        href={route('quiz.index', enrollment.id)}
                                         className="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-indigo-700"
                                     >
-                                        {enrollment.sudah_mengerjakan_kuis ? 'Kerjakan Ulang Kuis' : 'Kerjakan Kuis'}
+                                        {enrollment.kuis_selesai > 0 ? 'Lanjutkan Kuis' : 'Kerjakan Kuis'}
                                     </a>
                                 )}
 

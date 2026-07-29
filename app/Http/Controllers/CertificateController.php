@@ -11,8 +11,8 @@ use Illuminate\Support\Str;
 class CertificateController extends Controller
 {
     /**
-     * Unduh sertifikat PDF untuk kursus yang sudah selesai (30 hari)
-     * dan kuisnya sudah dikerjakan.
+     * Unduh sertifikat PDF setelah SEMUA kuis checkpoint kursus ini
+     * selesai dikerjakan (tidak perlu menunggu masa akses 30 hari habis).
      */
     public function download(Enrollment $enrollment)
     {
@@ -21,12 +21,12 @@ class CertificateController extends Controller
         $enrollment->load(['course.tutor.user', 'user']);
 
         if (! $enrollment->bisa_unduh_sertifikat) {
-            $alasan = ! $enrollment->sudah_selesai
-                ? 'Kursus ini masih berjalan, sertifikat baru bisa diunduh setelah masa belajar 30 hari berakhir.'
-                : 'Kamu belum mengerjakan kuis kursus ini. Selesaikan kuisnya dulu sebelum mengunduh sertifikat.';
+            $alasan = $enrollment->total_kuis === 0
+                ? 'Kursus ini belum memiliki kuis checkpoint. Sertifikat akan bisa diunduh setelah kuisnya tersedia dan diselesaikan.'
+                : "Kamu baru menyelesaikan {$enrollment->kuis_selesai} dari {$enrollment->total_kuis} kuis. Selesaikan semua kuis dulu sebelum mengunduh sertifikat.";
 
             return redirect()
-                ->route('enrollments.show', $enrollment)
+                ->route('quiz.index', $enrollment)
                 ->with('error', $alasan);
         }
 
