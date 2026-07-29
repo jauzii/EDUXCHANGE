@@ -40,36 +40,6 @@ EDUXCHANGE dikembangkan sebagai platform edukasi digital yang memungkinkan pengg
 - Memantau aktivitas pengguna
 
 ---
-
-## 📚 Kursus Tersedia
-
-### 🎨 Dasar-Dasar UI/UX Design
-
-Belajar konsep User Interface dan User Experience mulai dari wireframing, prototyping hingga desain modern.
-
-💰 Harga: Rp120.000  
-⏳ Durasi: 30 Hari
-
----
-
-### 💻 Belajar Laravel dari Nol
-
-Belajar framework Laravel mulai dari routing, database, autentikasi, CRUD hingga deployment aplikasi.
-
-💰 Harga: Rp293.000  
-⏳ Durasi: 30 Hari
-
----
-
-### 📈 Strategi Digital Marketing
-
-Pelajari SEO, Social Media Marketing, Content Marketing, dan strategi pemasaran digital modern.
-
-💰 Harga: Rp98.000  
-⏳ Durasi: 30 Hari
-
----
-
 ## 🛠️ Teknologi yang Digunakan
 
 ### Backend
@@ -232,3 +202,5 @@ Project Mata Kuliah Pemrograman Web
 ## 📄 Lisensi
 
 Project ini dibuat untuk kebutuhan pembelajaran dan pengembangan akademik.
+
+Terimkasih!
