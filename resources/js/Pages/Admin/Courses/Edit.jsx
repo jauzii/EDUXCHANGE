@@ -23,8 +23,28 @@ export default function AdminCoursesEdit({ course, categories = [] }) {
                         <Link href={route('admin.courses.index')} className="text-sm font-bold text-indigo-200 hover:text-white">
                             Kembali ke daftar paket
                         </Link>
-                        <h1 className="mt-4 text-3xl font-extrabold tracking-tight">Edit Paket Kursus</h1>
-                        <p className="mt-3 text-slate-300">Perubahan langsung berlaku di halaman paket belajar siswa.</p>
+                        <div className="mt-4 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+                            <div>
+                                <h1 className="text-3xl font-extrabold tracking-tight">Edit Paket Kursus</h1>
+                                <p className="mt-3 text-slate-300">Perubahan langsung berlaku di halaman paket belajar siswa.</p>
+                            </div>
+                            <div className="flex flex-col gap-3 sm:flex-row">
+                                <a
+                                    href={route('admin.courses.certificate-preview', course.id)}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="inline-flex items-center justify-center rounded-2xl border border-white/20 bg-white/10 px-5 py-3 text-sm font-bold text-white transition hover:bg-white/20"
+                                >
+                                    Lihat Contoh Sertifikat
+                                </a>
+                                <Link
+                                    href={route('admin.courses.quizzes.index', course.id)}
+                                    className="inline-flex items-center justify-center rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-indigo-700"
+                                >
+                                    Kelola Materi &amp; Kuis
+                                </Link>
+                            </div>
+                        </div>
                     </section>
 
                     <form onSubmit={submit} className="space-y-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">

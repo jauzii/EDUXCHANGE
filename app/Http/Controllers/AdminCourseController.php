@@ -58,20 +58,39 @@ class AdminCourseController extends Controller
     }
 
     /**
-     * Simpan paket kursus baru.
+     * Simpan paket kursus baru. Kalau admin juga mengisi bagian materi
+     * & soal contoh di form yang sama, 1 modul (quiz + materi + soal)
+     * langsung dibuat sekalian supaya paket ini bisa langsung dites
+     * (dikerjakan siswa, sampai sertifikat) tanpa perlu langkah terpisah.
      */
     public function store(Request $request): RedirectResponse
     {
         $data = $this->validated($request);
+        $moduleData = $this->validatedModule($request);
 
         // Kolom tutor_id di database masih mewajibkan relasi teknis ke
         // tabel tutors (foreign key), tapi nama yang ditampilkan ke user
         // sekarang selalu berasal dari input manual tutor_nama.
         $data['tutor_id'] = $this->fallbackTutorId();
 
-        Course::create($data);
+        $course = Course::create($data);
 
-        return redirect()->route('admin.courses.index')->with('success', 'Paket kursus berhasil ditambahkan.');
+        $moduleDibuat = false;
+
+        if (! empty($moduleData['judul'])) {
+            AdminQuizController::persistModule($course, [
+                ...$moduleData,
+                'urutan' => 1,
+            ]);
+            $moduleDibuat = true;
+        }
+
+        return redirect()->route('admin.courses.index')->with(
+            'success',
+            $moduleDibuat
+                ? 'Paket kursus berhasil ditambahkan, lengkap dengan materi & soal contohnya.'
+                : 'Paket kursus berhasil ditambahkan. Kamu bisa menambahkan materi & soal kapan saja lewat tombol "Kelola Materi & Kuis".'
+        );
     }
 
     /**
@@ -126,6 +145,31 @@ class AdminCourseController extends Controller
             'kategori' => ['required', 'string', 'max:255'],
             'harga' => ['required', 'integer', 'min:0'],
             'deskripsi' => ['nullable', 'string'],
+        ]);
+    }
+
+    /**
+     * Validasi bagian materi & soal contoh yang OPSIONAL di form tambah
+     * paket kursus. Kalau admin mengisi "judul" modul, maka konten materi
+     * dan minimal 1 soal lengkap wajib diisi. Kalau "judul" dikosongkan
+     * (admin memilih menambahkan materi/soal nanti), seluruh bagian ini
+     * dilewati tanpa error.
+     */
+    private function validatedModule(Request $request): array
+    {
+        return $request->validate([
+            'judul' => ['nullable', 'string', 'max:255'],
+            'konten' => ['required_with:judul', 'nullable', 'string'],
+            'soal' => ['required_with:judul', 'nullable', 'array', 'min:1'],
+            'soal.*.pertanyaan' => ['required_with:judul', 'string'],
+            'soal.*.pilihan_a' => ['required_with:judul', 'string', 'max:255'],
+            'soal.*.pilihan_b' => ['required_with:judul', 'string', 'max:255'],
+            'soal.*.pilihan_c' => ['required_with:judul', 'string', 'max:255'],
+            'soal.*.pilihan_d' => ['required_with:judul', 'string', 'max:255'],
+            'soal.*.jawaban_benar' => ['required_with:judul', 'in:a,b,c,d'],
+        ], [], [
+            'judul' => 'judul modul',
+            'konten' => 'konten materi',
         ]);
     }
 

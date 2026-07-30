@@ -110,6 +110,12 @@ export default function AdminCoursesIndex({ courses = [], filters = {} }) {
 
                                         <div className="flex gap-3 lg:flex-col">
                                             <Link
+                                                href={route('admin.courses.quizzes.index', course.id)}
+                                                className="inline-flex flex-1 items-center justify-center rounded-2xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-indigo-700"
+                                            >
+                                                Kelola Materi &amp; Kuis
+                                            </Link>
+                                            <Link
                                                 href={route('admin.courses.edit', course.id)}
                                                 className="inline-flex flex-1 items-center justify-center rounded-2xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-indigo-700"
                                             >

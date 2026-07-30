@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\AdminCertificateController;
 use App\Http\Controllers\AdminCourseController;
 use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminQuizController;
 use App\Http\Controllers\AdminStudentController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnrollmentController;
@@ -42,6 +44,21 @@ Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
     Route::get('/admin/courses/{course}/edit', [AdminCourseController::class, 'edit'])->name('admin.courses.edit');
     Route::put('/admin/courses/{course}', [AdminCourseController::class, 'update'])->name('admin.courses.update');
     Route::delete('/admin/courses/{course}', [AdminCourseController::class, 'destroy'])->name('admin.courses.destroy');
+
+    // Kelola modul (materi + soal pilihan ganda) per paket kursus.
+    Route::prefix('/admin/courses/{course}/quizzes')->name('admin.courses.quizzes.')->group(function () {
+        Route::get('/', [AdminQuizController::class, 'index'])->name('index');
+        Route::get('/create', [AdminQuizController::class, 'create'])->name('create');
+        Route::post('/', [AdminQuizController::class, 'store'])->name('store');
+        Route::get('/{quiz}/edit', [AdminQuizController::class, 'edit'])->name('edit');
+        Route::put('/{quiz}', [AdminQuizController::class, 'update'])->name('update');
+        Route::delete('/{quiz}', [AdminQuizController::class, 'destroy'])->name('destroy');
+    });
+
+    // Contoh/preview sertifikat (data dummy) supaya admin bisa mengecek
+    // tampilan sertifikat tanpa perlu jadi siswa sungguhan.
+    Route::get('/admin/courses/{course}/sertifikat-contoh', [AdminCertificateController::class, 'preview'])
+        ->name('admin.courses.certificate-preview');
 });
 
 Route::middleware('auth')->group(function () {

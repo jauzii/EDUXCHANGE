@@ -179,7 +179,7 @@ class DatabaseSeeder extends Seeder
                         ]);
                     }
 
-                    $enrollment->hitungNilai();
+                    $enrollment->recalculateScore();
                 }
             });
         });
