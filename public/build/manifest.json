@@ -1,6 +1,6 @@
 {
-  "_AuthenticatedLayout-Bac1Y5xV.js": {
-    "file": "assets/AuthenticatedLayout-Bac1Y5xV.js",
+  "_AuthenticatedLayout-BjvvlDh_.js": {
+    "file": "assets/AuthenticatedLayout-BjvvlDh_.js",
     "name": "AuthenticatedLayout",
     "imports": [
       "resources/js/app.jsx"
@@ -16,176 +16,228 @@
     ]
   },
   "resources/js/Pages/Admin/Courses/Create.jsx": {
-    "file": "assets/Create-CQcN94ou.js",
+    "file": "assets/Create-BaCWlg54.js",
     "name": "Create",
     "src": "resources/js/Pages/Admin/Courses/Create.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-Bac1Y5xV.js"
+      "_AuthenticatedLayout-BjvvlDh_.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Admin/Courses/Edit.jsx": {
-    "file": "assets/Edit-ClnPuhH0.js",
+    "file": "assets/Edit-t4pz-PY1.js",
     "name": "Edit",
     "src": "resources/js/Pages/Admin/Courses/Edit.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-Bac1Y5xV.js"
+      "_AuthenticatedLayout-BjvvlDh_.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Admin/Courses/Index.jsx": {
-    "file": "assets/Index-jXOMIEtr.js",
+    "file": "assets/Index-g6xMqm0O.js",
     "name": "Index",
     "src": "resources/js/Pages/Admin/Courses/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-Bac1Y5xV.js"
+      "_AuthenticatedLayout-BjvvlDh_.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Admin/Dashboard.jsx": {
-    "file": "assets/Dashboard-V7oxXbY9.js",
+    "file": "assets/Dashboard-li_Cw_ax.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Admin/Dashboard.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-Bac1Y5xV.js"
+      "_AuthenticatedLayout-BjvvlDh_.js"
+    ],
+    "css": [
+      "assets/app-CKkYlJmz.css"
+    ]
+  },
+  "resources/js/Pages/Admin/Quizzes/Create.jsx": {
+    "file": "assets/Create-BQei_EHK.js",
+    "name": "Create",
+    "src": "resources/js/Pages/Admin/Quizzes/Create.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-BjvvlDh_.js"
+    ],
+    "css": [
+      "assets/app-CKkYlJmz.css"
+    ]
+  },
+  "resources/js/Pages/Admin/Quizzes/Edit.jsx": {
+    "file": "assets/Edit-DYRWV4QS.js",
+    "name": "Edit",
+    "src": "resources/js/Pages/Admin/Quizzes/Edit.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-BjvvlDh_.js"
+    ],
+    "css": [
+      "assets/app-CKkYlJmz.css"
+    ]
+  },
+  "resources/js/Pages/Admin/Quizzes/Index.jsx": {
+    "file": "assets/Index-DVp3Metf.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Admin/Quizzes/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-BjvvlDh_.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Admin/Students/Index.jsx": {
-    "file": "assets/Index-BnKS0rjD.js",
+    "file": "assets/Index-Db0hw3Yu.js",
     "name": "Index",
     "src": "resources/js/Pages/Admin/Students/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-Bac1Y5xV.js"
+      "_AuthenticatedLayout-BjvvlDh_.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Admin/Students/Show.jsx": {
-    "file": "assets/Show-U-j-G94x.js",
+    "file": "assets/Show-kjpHJx8K.js",
     "name": "Show",
     "src": "resources/js/Pages/Admin/Students/Show.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-Bac1Y5xV.js"
+      "_AuthenticatedLayout-BjvvlDh_.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Courses/Index.jsx": {
-    "file": "assets/Index-PAutPwUg.js",
+    "file": "assets/Index-BRqRLIHZ.js",
     "name": "Index",
     "src": "resources/js/Pages/Courses/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-Bac1Y5xV.js"
+      "_AuthenticatedLayout-BjvvlDh_.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Dashboard.jsx": {
-    "file": "assets/Dashboard-CBAn-_m8.js",
+    "file": "assets/Dashboard-CYjgI8Z2.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Dashboard.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-Bac1Y5xV.js"
+      "_AuthenticatedLayout-BjvvlDh_.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Enrollments/Index.jsx": {
-    "file": "assets/Index-jDM_ZRsN.js",
+    "file": "assets/Index-DH6YUDar.js",
     "name": "Index",
     "src": "resources/js/Pages/Enrollments/Index.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-Bac1Y5xV.js"
+      "_AuthenticatedLayout-BjvvlDh_.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Enrollments/Show.jsx": {
-    "file": "assets/Show-CVLq6WdJ.js",
+    "file": "assets/Show-DJh_3yZ4.js",
     "name": "Show",
     "src": "resources/js/Pages/Enrollments/Show.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-Bac1Y5xV.js"
+      "_AuthenticatedLayout-BjvvlDh_.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Payment/Show.jsx": {
-    "file": "assets/Show-ZO6HaJUb.js",
+    "file": "assets/Show-jcv1VcHq.js",
     "name": "Show",
     "src": "resources/js/Pages/Payment/Show.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-Bac1Y5xV.js"
+      "_AuthenticatedLayout-BjvvlDh_.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Payment/Success.jsx": {
-    "file": "assets/Success-DOVD9ywX.js",
+    "file": "assets/Success-CZYtGPS2.js",
     "name": "Success",
     "src": "resources/js/Pages/Payment/Success.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-Bac1Y5xV.js"
+      "_AuthenticatedLayout-BjvvlDh_.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/Pages/Quiz/Create.jsx": {
-    "file": "assets/Create-BVIAN5Y8.js",
+    "file": "assets/Create-DD90h7HC.js",
     "name": "Create",
     "src": "resources/js/Pages/Quiz/Create.jsx",
     "isDynamicEntry": true,
     "imports": [
       "resources/js/app.jsx",
-      "_AuthenticatedLayout-Bac1Y5xV.js"
+      "_AuthenticatedLayout-BjvvlDh_.js"
+    ],
+    "css": [
+      "assets/app-CKkYlJmz.css"
+    ]
+  },
+  "resources/js/Pages/Quiz/Index.jsx": {
+    "file": "assets/Index-C1Tque0b.js",
+    "name": "Index",
+    "src": "resources/js/Pages/Quiz/Index.jsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "resources/js/app.jsx",
+      "_AuthenticatedLayout-BjvvlDh_.js"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
     ]
   },
   "resources/js/app.jsx": {
-    "file": "assets/app-DyVqbynY.js",
+    "file": "assets/app-aQphP4NL.js",
     "name": "app",
     "src": "resources/js/app.jsx",
     "isEntry": true,
@@ -194,6 +246,9 @@
       "resources/js/Pages/Admin/Courses/Edit.jsx",
       "resources/js/Pages/Admin/Courses/Index.jsx",
       "resources/js/Pages/Admin/Dashboard.jsx",
+      "resources/js/Pages/Admin/Quizzes/Create.jsx",
+      "resources/js/Pages/Admin/Quizzes/Edit.jsx",
+      "resources/js/Pages/Admin/Quizzes/Index.jsx",
       "resources/js/Pages/Admin/Students/Index.jsx",
       "resources/js/Pages/Admin/Students/Show.jsx",
       "resources/js/Pages/Courses/Index.jsx",
@@ -202,7 +257,8 @@
       "resources/js/Pages/Enrollments/Show.jsx",
       "resources/js/Pages/Payment/Show.jsx",
       "resources/js/Pages/Payment/Success.jsx",
-      "resources/js/Pages/Quiz/Create.jsx"
+      "resources/js/Pages/Quiz/Create.jsx",
+      "resources/js/Pages/Quiz/Index.jsx"
     ],
     "css": [
       "assets/app-CKkYlJmz.css"
